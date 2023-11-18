@@ -5,8 +5,13 @@ import { FaTimesCircle } from "react-icons/fa";
 const Main = () => {
     const db = getDatabase();
     let [insertValue,  setInsertValue] = useState()
+    let [insertValueUpdate,  setInsertValueUpdate] = useState()
+    let [idCase,  setIdCase] = useState()
+    let [inputDef,  setInputDef] = useState("")
     let [insertValueShow,  setInsertValueShow] = useState([])
     let [popupShow, setPopupShow] = useState(false)
+
+
     let handleChangeValue = (e) =>{
         setInsertValue(e.target.value)
     }
@@ -33,10 +38,41 @@ const Main = () => {
         remove(ref(db, 'listData/' + item.id))
     }
 
-    const handleEdit = () =>{
+    const handleEdit = (itemValue) =>{
         setPopupShow(true)
+        setInputDef(itemValue.data)
+        setIdCase(itemValue.id)
     }
-    let handlePopUpremove = ()=>{setPopupShow(false)}
+    let handlePopUpremove = ()=>{
+        setPopupShow(false)
+        setInsertValueUpdate("")
+    }
+
+    const handleEditChange = (e)=>{
+        setInputDef("")
+        setInsertValueUpdate(e.target.value)
+    }
+
+    const handleUpdateData = () =>{
+        console.log(idCase)
+        set(ref(db, 'listData/' + idCase), {
+            data: insertValueUpdate,
+         
+          })
+          .then(() => {
+            // Data saved successfully!
+            console.log("Data saved successfully")
+            setInsertValueUpdate("")
+          })
+          .catch((error) => {
+            // The write failed...
+            console.log(error)
+          });
+          
+
+          
+    }
+    
   return (
     <div className='bg-[#DFE6E9] h-screen w-full '>
         <div className="container mx-auto">
@@ -52,7 +88,7 @@ const Main = () => {
                         <p className='text-lg'>{itemValue.data}</p>
                     </div>
                     <div>
-                        <button onClick={handleEdit} className='bg-[#FDCB6E] py-3 px-8 text-xl rounded-md mr-2 hover:bg-[#E67E22]'>Edit</button>
+                        <button onClick={()=>handleEdit(itemValue)} className='bg-[#FDCB6E] py-3 px-8 text-xl rounded-md mr-2 hover:bg-[#E67E22]'>Edit</button>
                         <button onClick={()=>handleDelete(itemValue)} className='bg-[#E17055] py-3 px-8 text-xl rounded-md hover:bg-red-700'>delete</button>
                     </div>
                 </div>
@@ -65,8 +101,8 @@ const Main = () => {
         <div className="absolute top-0 left-0 w-full h-screen bg-[rgba(0,0,0,0.5)] flex justify-center items-center">
             <div className="bg-[#DFE6E9] p-8 w-1/3 rounded-lg font-bold capitalize relative">
                 <h2 className="text-3xl ">the edit and update data</h2>
-                <input type="text" className="w-full p-3 border border-solid border-blue-300 rounded-lg my-5" />
-                <button className="bg-[#0984E3] py-3 px-8 text-2xl text-white capitalize font-semibold rounded-md">update</button>
+                <input onChange={handleEditChange} value={insertValueUpdate ? insertValueUpdate : inputDef} type="text" className="w-full p-3 border border-solid border-blue-300 rounded-lg my-5" />
+                <button onClick={handleUpdateData} className="bg-[#0984E3] py-3 px-8 text-2xl text-white capitalize font-semibold rounded-md">update</button>
                 <div className="absolute top-[-9px] right-[-9px]">
                     <FaTimesCircle onClick={handlePopUpremove} className="text-4xl text-red-700" />
                 </div>
