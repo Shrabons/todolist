@@ -6,6 +6,7 @@ const Main = () => {
     const db = getDatabase();
     let [insertValue,  setInsertValue] = useState()
     let [insertValueShow,  setInsertValueShow] = useState([])
+    let [popupShow, setPopupShow] = useState(false)
     let handleChangeValue = (e) =>{
         setInsertValue(e.target.value)
     }
@@ -31,6 +32,11 @@ const Main = () => {
     const handleDelete = (item) => {
         remove(ref(db, 'listData/' + item.id))
     }
+
+    const handleEdit = () =>{
+        setPopupShow(true)
+    }
+    let handlePopUpremove = ()=>{setPopupShow(false)}
   return (
     <div className='bg-[#DFE6E9] h-screen w-full '>
         <div className="container mx-auto">
@@ -46,7 +52,7 @@ const Main = () => {
                         <p className='text-lg'>{itemValue.data}</p>
                     </div>
                     <div>
-                        <button className='bg-[#FDCB6E] py-3 px-8 text-xl rounded-md mr-2'>Edit</button>
+                        <button onClick={handleEdit} className='bg-[#FDCB6E] py-3 px-8 text-xl rounded-md mr-2 hover:bg-[#E67E22]'>Edit</button>
                         <button onClick={()=>handleDelete(itemValue)} className='bg-[#E17055] py-3 px-8 text-xl rounded-md hover:bg-red-700'>delete</button>
                     </div>
                 </div>
@@ -54,17 +60,20 @@ const Main = () => {
            
            </div>
         </div>
-         <div className="absolute top-0 left-0 w-full h-screen bg-[rgba(0,0,0,0.5)] flex justify-center items-center">
+
+        {popupShow &&
+        <div className="absolute top-0 left-0 w-full h-screen bg-[rgba(0,0,0,0.5)] flex justify-center items-center">
             <div className="bg-[#DFE6E9] p-8 w-1/3 rounded-lg font-bold capitalize relative">
                 <h2 className="text-3xl ">the edit and update data</h2>
                 <input type="text" className="w-full p-3 border border-solid border-blue-300 rounded-lg my-5" />
                 <button className="bg-[#0984E3] py-3 px-8 text-2xl text-white capitalize font-semibold rounded-md">update</button>
                 <div className="absolute top-[-9px] right-[-9px]">
-                    <FaTimesCircle className="text-4xl text-red-700" />
+                    <FaTimesCircle onClick={handlePopUpremove} className="text-4xl text-red-700" />
                 </div>
             </div>
-
-        </div>       
+        </div>
+        }
+                
     </div>
   )
 }
